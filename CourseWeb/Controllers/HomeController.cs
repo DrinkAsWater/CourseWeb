@@ -1,21 +1,46 @@
-using System.Diagnostics;
+using CourseService.Interface;
+using CourseService.Service;
 using CourseWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace CourseWeb.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ICourseScheduleService _courseScheduleService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ICourseScheduleService courseScheduleService)
         {
             _logger = logger;
+            _courseScheduleService = courseScheduleService;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var vm = new List<CourseScheduleViewModel>();
+            var model = await _courseScheduleService.QueryAsync();
+            foreach (var item in model)
+            {
+                vm.Add(new CourseScheduleViewModel
+                {
+                    Id = item.Id,
+                    CourseCode = item.Code,
+                    CourseName = item.Name,
+                    TeacherName = item.TeacherName,
+                    Times = item.Times,
+                    StartDate = item.Sdate,
+                    EndDate = item.Edate,
+                    Location = item.Location,
+                    Desc = item.Des
+                });
+            }
+            return View(vm);
         }
 
         public IActionResult Privacy()

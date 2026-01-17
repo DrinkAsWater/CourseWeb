@@ -1,3 +1,10 @@
+using CourseData.Models;
+using CourseData.Repository;
+using CourseService.Interface;
+using CourseService.Respository;
+using CourseService.Service;
+using Microsoft.EntityFrameworkCore;
+
 namespace CourseWeb
 {
     public class Program
@@ -5,9 +12,15 @@ namespace CourseWeb
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            builder.Services.AddDbContext<KhNetCourseContext>(options =>
+      options.UseSqlServer(
+          builder.Configuration.GetConnectionString("KhNetCourse")
+      )
+  );
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<ICourseScheduleService, CourseScheduleService>();
+            builder.Services.AddScoped<ICourseScheduleRepository,CourseScheduleRepository>();
 
             var app = builder.Build();
 

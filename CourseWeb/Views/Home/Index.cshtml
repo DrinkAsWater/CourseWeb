@@ -1,4 +1,7 @@
-﻿@{
+﻿@model IEnumerable<CourseScheduleViewModel>
+@{
+
+
     ViewData["Title"] = "Home Page";
 }
 
@@ -62,124 +65,94 @@
         <span class="carousel-control-next-icon"></span>
     </button>
 </div>
-<!-- 課程卡片 -->
+<!-- ===== 課程卡片 ===== -->
 <div class="container">
     <h2 class="mb-4 text-center">熱門課程</h2>
     <div class="row row-cols-1 row-cols-md-3 g-4">
 
-        <!-- 卡片1 -->
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <img src="https://picsum.photos/400/200?random=1" class="card-img-top" alt="C# 入門">
-                <div class="card-body">
-                    <h5 class="card-title">C# 入門</h5>
-                    <p class="card-text">從零開始學習 C# 語言，建立程式基礎。</p>
-                    <ul class="list-unstyled small mb-0">
-                        <li><strong>老師：</strong>王大明</li>
-                        <li><strong>地點：</strong>教室 A101</li>
-                        <li><strong>時數：</strong>36 小時</li>
-                    </ul>
-                </div>
-                <div class="card-footer text-end">
-                    <a href="#" class="btn btn-primary btn-sm">查看更多</a>
-                </div>
-            </div>
-        </div>
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://picsum.photos/400/200?random=@item.Id"
+                         class="card-img-top"
+                         alt="@item.CourseName">
 
-        <!-- 卡片2 -->
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <img src="https://picsum.photos/400/200?random=2" class="card-img-top" alt="ASP.NET Core MVC">
-                <div class="card-body">
-                    <h5 class="card-title">ASP.NET Core MVC</h5>
-                    <p class="card-text">建立完整的 MVC 網站與應用程式。</p>
-                    <ul class="list-unstyled small mb-0">
-                        <li><strong>老師：</strong>李小華</li>
-                        <li><strong>地點：</strong>教室 B202</li>
-                        <li><strong>時數：</strong>40 小時</li>
-                    </ul>
-                </div>
-                <div class="card-footer text-end">
-                    <a href="#" class="btn btn-primary btn-sm">查看更多</a>
-                </div>
-            </div>
-        </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@item.CourseName</h5>
 
-        <!-- 卡片3 -->
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <img src="https://picsum.photos/400/200?random=3" class="card-img-top" alt="Entity Framework Core">
-                <div class="card-body">
-                    <h5 class="card-title">Entity Framework Core</h5>
-                    <p class="card-text">掌握資料庫操作與 ORM 技術，快速開發資料導向應用程式。</p>
-                    <ul class="list-unstyled small mb-0">
-                        <li><strong>老師：</strong>陳志明</li>
-                        <li><strong>地點：</strong>教室 C303</li>
-                        <li><strong>時數：</strong>32 小時</li>
-                    </ul>
-                </div>
-                <div class="card-footer text-end">
-                    <a href="#" class="btn btn-primary btn-sm">查看更多</a>
-                </div>
-            </div>
-        </div>
+                        <!-- 簡短描述 -->
+                        <p class="card-text">
+                            @(item.Desc?.Length > 50
+                                ? item.Desc.Substring(0, 50) + "..."
+                                : item.Desc)
+                        </p>
 
-        <!-- 卡片4 -->
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <img src="https://picsum.photos/400/200?random=4" class="card-img-top" alt="JavaScript 入門">
-                <div class="card-body">
-                    <h5 class="card-title">JavaScript 入門</h5>
-                    <p class="card-text">學習前端程式語言，建立互動式網頁效果。</p>
-                    <ul class="list-unstyled small mb-0">
-                        <li><strong>老師：</strong>張美玲</li>
-                        <li><strong>地點：</strong>教室 D404</li>
-                        <li><strong>時數：</strong>30 小時</li>
-                    </ul>
-                </div>
-                <div class="card-footer text-end">
-                    <a href="#" class="btn btn-primary btn-sm">查看更多</a>
-                </div>
-            </div>
-        </div>
+                        <ul class="list-unstyled small mb-0">
+                            <li><strong>課程編號：</strong>@item.CourseCode</li>
+                            <li><strong>老師：</strong>@item.TeacherName</li>
+                            <li><strong>地點：</strong>@item.Location</li>
+                            <li><strong>時數：</strong>@item.Times 小時</li>
+                        </ul>
+                    </div>
 
-        <!-- 卡片5 -->
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <img src="https://picsum.photos/400/200?random=5" class="card-img-top" alt="HTML & CSS 基礎">
-                <div class="card-body">
-                    <h5 class="card-title">HTML & CSS 基礎</h5>
-                    <p class="card-text">建立網頁骨架與樣式，學習網頁設計基礎。</p>
-                    <ul class="list-unstyled small mb-0">
-                        <li><strong>老師：</strong>林志玲</li>
-                        <li><strong>地點：</strong>教室 E505</li>
-                        <li><strong>時數：</strong>28 小時</li>
-                    </ul>
-                </div>
-                <div class="card-footer text-end">
-                    <a href="#" class="btn btn-primary btn-sm">查看更多</a>
+                    <div class="card-footer text-end">
+                        <!-- 🔴 觸發 Modal -->
+                        <button class="btn btn-primary btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#courseModal-@item.Id">
+                            查看更多
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 卡片6 -->
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <img src="https://picsum.photos/400/200?random=6" class="card-img-top" alt="React 入門">
-                <div class="card-body">
-                    <h5 class="card-title">React 入門</h5>
-                    <p class="card-text">學習 React 框架，建立現代化前端應用程式。</p>
-                    <ul class="list-unstyled small mb-0">
-                        <li><strong>老師：</strong>何明哲</li>
-                        <li><strong>地點：</strong>教室 F606</li>
-                        <li><strong>時數：</strong>35 小時</li>
-                    </ul>
-                </div>
-                <div class="card-footer text-end">
-                    <a href="#" class="btn btn-primary btn-sm">查看更多</a>
+            <!-- ===== Modal（彈跳視窗） ===== -->
+            <div class="modal fade"
+                 id="courseModal-@item.Id"
+                 tabindex="-1"
+                 aria-hidden="true">
+
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title">@item.CourseName</h5>
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <p><strong>課程編號：</strong>@item.CourseCode</p>
+                            <p><strong>老師：</strong>@item.TeacherName</p>
+                            <p><strong>地點：</strong>@item.Location</p>
+                            <p><strong>時數：</strong>@item.Times 小時</p>
+                            <p>
+                                <strong>上課日期：</strong>
+                                @item.StartDate.ToString("yyyy/MM/dd")
+                                ~
+                                @item.EndDate.ToString("yyyy/MM/dd")
+                            </p>
+
+                            <hr />
+
+                            <p>@item.Desc</p>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                關閉
+                            </button>
+                        </div>
+
+                    </div>
                 </div>
             </div>
-        </div>
+        }
 
     </div>
 </div>
+

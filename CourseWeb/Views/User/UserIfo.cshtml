@@ -1,0 +1,58 @@
+﻿@model CourseWeb.Models.UserChangeIfoViewModel
+@{
+    ViewData["Title"] = "UserIfo";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="text-center mb-4">會員資料修改</h4>
+
+                    <form asp-action="ChangeInfo" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <!-- 姓名 -->
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label"></label>
+                            <input asp-for="Name"
+                                   class="form-control"
+                                   placeholder="請輸入姓名" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <!-- 手機 -->
+                        <div class="mb-3">
+                            <label asp-for="Mobile" class="form-label"></label>
+                            <input asp-for="Mobile"
+                                   class="form-control"
+                                   placeholder="請輸入手機號碼" />
+                            <span asp-validation-for="Mobile" class="text-danger"></span>
+                        </div>
+
+                        <!-- 按鈕 -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                儲存修改
+                            </button>
+                            <a asp-controller="Home"
+                               asp-action="Index"
+                               class="btn btn-outline-secondary">
+                                取消
+                            </a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

@@ -9,6 +9,7 @@ namespace CourseWeb.Models
         public string ? UserName { get; set; }
 
         [Required(ErrorMessage = "請輸入密碼")]
+        [DataType(DataType.Password)]
         [Display(Name = "密碼")]
         public string? Password { get; set; }
 

@@ -13,9 +13,9 @@
 
         public DateOnly EndDate { get; set; }
 
-        public string Localation {  get; set; }
+        public string Location {  get; set; }
 
-        public string Dec { get; set; }
+        public string Desc { get; set; }
 
 
     }

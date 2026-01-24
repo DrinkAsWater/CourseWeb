@@ -57,31 +57,15 @@
                                    data-bs-toggle="dropdown"
                                    aria-expanded="false">
                                     <span class="me-2">@User.Identity.Name</span>
-                                    <img src="https: //i.pravatar.cc/32"
+                                    <img src="https://i.pravatar.cc/32" alt="avatar"
                                          class="rounded-circle"
-                                         style="width:32px;height:32px;" />
-                                   
-
+                                         width="32" height="32" />
                                 </a>
-
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li>
-                                        <a class="dropdown-item"
-                                           asp-controller="User"
-                                           asp-action="ChangePwd">變更密碼</a>
-
-                                    </li>
-                                    <li><hr class="dropdown-divider" /></li>
-                                    <li>
-                                        <form asp-controller="User"
-                                              asp-action="Logout"
-                                              method="post">
-                                            <button type="submit"
-                                                    class="dropdown-item">
-                                                登出
-                                            </button>
-                                        </form>
-                                    </li>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="/User/ChangeInfo">會員資料</a></li>
+                                    <li><a class="dropdown-item" href="/User/ChangePwd">修改密碼</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="/User/Logout">登出</a></li>
                                 </ul>
                             </li>
                         </ul>

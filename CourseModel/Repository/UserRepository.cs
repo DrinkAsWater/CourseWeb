@@ -87,6 +87,7 @@ namespace CourseData.Repository
             {
                 return false;
             }
+            stu.Password = pwd;
             await _dbContext.SaveChangesAsync();
             return true;
         }

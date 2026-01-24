@@ -129,11 +129,12 @@ namespace CourseWeb.Controllers
                     if (!result)
                     {
                         ModelState.AddModelError("system", "修改密碼失敗");
-                        return View(changePwdViewModel);
-                    }
+                    return View(changePwdViewModel);
+                }
+                return RedirectToAction("Logout");
                 
             }
-                return RedirectToAction("Logout");
+                        return View(changePwdViewModel);
 
 
         }
@@ -144,7 +145,7 @@ namespace CourseWeb.Controllers
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var member = await _userService.FindUserAsync(userId);
 
-            var vm = new UserChgInfoViewModel{ Name = member.UserName, Mobile = member.Mobile };
+            var vm = new UserChgInfoViewModel(){ Name = member.UserName, Mobile = member.Mobile};
             return View(vm);
         }
     }

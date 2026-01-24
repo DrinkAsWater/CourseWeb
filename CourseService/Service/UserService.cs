@@ -29,7 +29,7 @@ namespace CourseService.Service
             if (existUser == null) return false;
             //驗證舊密碼
             var oldHashPwd = PasswordHelper.PwdSHA256Hash(userPwdReqModel.OldPwd,userPwdReqModel.UserId.ToString());
-            if (oldHashPwd == null) return false;
+            if (oldHashPwd != existUser.Pwd) return false;
             //更新密碼
             var newHashPwd = PasswordHelper.PwdSHA256Hash(userPwdReqModel.NewPwd,userPwdReqModel.UserId.ToString());
 

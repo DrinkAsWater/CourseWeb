@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace CourseService.Interface
 {
-    public interface IUserRespository
+    public interface IUserService
     {
-        Task<bool> CreateAsync(UserModel user);
-        Task<UserModel> IsEmailExistsAsync(string email);
+        Task<bool> UserRegister(UserModel user);
     }
 }

@@ -11,5 +11,12 @@ namespace CourseService.Interface
     {
         Task<bool> CreateAsync(UserModel user);
         Task<UserModel> IsEmailExistsAsync(string email);
+
+        Task<UserModel> FindByIdAsync(Guid id);
+
+        Task<bool> UpdatePwdAsync(Guid id, string pwd);
+
+        Task<bool> UpdateInfoAsync(UserInfoReqModel userInfoReqModel);
+       
     }
 }

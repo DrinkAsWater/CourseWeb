@@ -31,6 +31,23 @@ namespace CourseData.Repository
             return true;
         }
 
+        public async Task<UserModel> FindByIdAsync(Guid id)
+        {
+            UserModel userModel = null;
+            var student = await _dbContext.Students.FirstOrDefaultAsync(s => s.Id == id);
+            if (student != null)
+            {
+                userModel = new UserModel()
+                {
+                    Id = student.Id,
+                    UserName = student.Name,
+                    Email = student.Email,
+                    Pwd = student.Password
+                };
+            }
+            return userModel;
+        }
+
         public async Task<UserModel> IsEmailExistsAsync(string email)
         {
             UserModel userModel = null;
@@ -46,6 +63,31 @@ namespace CourseData.Repository
                 };
             }
             return userModel;
+        }
+
+        public async Task<bool> UpdateInfoAsync(UserInfoReqModel userInfoReqModel)
+        {
+            var stu = await _dbContext.Students.FirstOrDefaultAsync(x => x.Id == userInfoReqModel.UserId);
+            if (stu == null)
+            {
+                return false;
+            }
+            stu.Name = userInfoReqModel.Name;
+            stu.Mobile = userInfoReqModel.Mobile;
+
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdatePwdAsync(Guid id, string pwd)
+        {
+            var stu = await _dbContext.Students.FirstOrDefaultAsync(x => x.Id == id);
+            if (stu == null)
+            {
+                return false;
+            }
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

@@ -3,6 +3,7 @@ using CourseData.Repository;
 using CourseService.Interface;
 using CourseService.Respository;
 using CourseService.Service;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 namespace CourseWeb
@@ -17,10 +18,18 @@ namespace CourseWeb
           builder.Configuration.GetConnectionString("KhNetCourse")
       )
   );
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, config =>
+                {
+                    config.Cookie.Name = "UserLoginCookie";
+                    config.LoginPath = "/User/Login";
+                });
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<ICourseScheduleService, CourseScheduleService>();
             builder.Services.AddScoped<ICourseScheduleRepository,CourseScheduleRepository>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IUserRespository,UserRepository>();
 
             var app = builder.Build();
 
@@ -37,6 +46,7 @@ namespace CourseWeb
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

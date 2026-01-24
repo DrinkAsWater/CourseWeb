@@ -9,6 +9,14 @@ namespace CourseService.Interface
 {
     public interface IUserService
     {
-        Task<bool> UserRegister(UserModel user);
+        Task<bool> UserRegisterAsync(UserModel user);
+
+        Task<UserModel> UserSignAsync(string email, string pwd);
+
+        Task<bool>UserPwdUpdateAsync(UserPwdReqModel userPwdReqModel);
+
+        Task<UserModel> FindUserAsync(Guid UserId);
+
+     
     }
 }

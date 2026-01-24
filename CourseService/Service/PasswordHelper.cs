@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CourseService.Service
 {
-    public static class PasswrdHelper
+    public static class PasswordHelper
     {
         public static string PwdSHA256Hash(string pwdStr, string salt)
         {

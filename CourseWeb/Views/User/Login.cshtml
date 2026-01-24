@@ -13,9 +13,10 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h3 class="text-center mb-4">會員登入</h3>
+                    <div asp-validation-summary="All"></div>
 
                     <!-- ⭐ 正確 Razor Form -->
-                    <form asp-action="Login" method="post">
+                    <form asp-controller="User" asp-action="Login" method="post">
 
                         <div class="mb-3">
                             <label asp-for="UserName" class="form-label"></label>

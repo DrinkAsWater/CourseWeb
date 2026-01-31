@@ -1,0 +1,84 @@
+﻿@model IEnumerable<CourseService.Models.UserCourseScheduleViewModel>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">課程管理</h2>
+
+    <!-- 顯示 TempData 訊息 -->
+    @if (TempData["ShopOrderMessage"] != null)
+    {
+        <div class="alert alert-info text-center">
+            @TempData["ShopOrderMessage"]
+        </div>
+    }
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://picsum.photos/400/200?random=@item.Id"
+                         class="card-img-top"
+                         alt="@item.CourseName">
+
+                    <div class="card-body">
+                        <h5 class="card-title">@item.CourseName</h5>
+                        <p><strong>老師：</strong>@item.TeacherName</p>
+                        <p><strong>上課日期：</strong>@item.CourseDate</p>
+                    </div>
+
+                    <div class="card-footer text-end">
+                        <!-- 查看詳情按鈕 -->
+                        <button class="btn btn-primary btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#courseModal-@item.Id">
+                            查看詳情
+                        </button>
+
+                        <!-- 刪除按鈕 -->
+                        <form asp-controller="Shop" asp-action="DeleteShopOrder" method="post" class="d-inline"
+                              onsubmit="return confirm('你確定要刪除這門課程嗎？');">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="userScheduleId" value="@item.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">刪除</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="courseModal-@item.Id" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title">@item.CourseName</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <p><strong>課程編號：</strong>@item.Id</p>
+                            <p><strong>老師：</strong>@item.TeacherName</p>
+                            <p><strong>上課日期：</strong>@item.CourseDate</p>
+                        </div>
+
+                        <div class="modal-footer d-flex justify-content-between">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+
+                            @if (Context.User.Identity.IsAuthenticated)
+                            {
+                                <form asp-controller="Shop" asp-action="ShopOrder" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="scheduleid" value="@item.Id" />
+                                    <button type="submit" class="btn btn-success">選課</button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -10,5 +10,7 @@ namespace CourseService.Interface
 public interface ICourseScheduleService
     {
         Task<IEnumerable<CourseScheduleModel>> QueryAsync();
+        Task<IEnumerable<CourseScheduleModel>> QueryAsync(string?keyword);
+
     }
 }

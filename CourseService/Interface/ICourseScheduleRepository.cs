@@ -10,5 +10,7 @@ namespace CourseService.Respository
    public interface ICourseScheduleRepository
     {
         Task<IEnumerable<CourseScheduleModel>> QueryAsync();
+
+        Task<IEnumerable<CourseScheduleModel>> QueryAsync(string? keyword);
     }
 }

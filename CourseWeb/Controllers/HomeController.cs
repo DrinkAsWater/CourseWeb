@@ -21,10 +21,10 @@ namespace CourseWeb.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string?keyword)
         {
             var vm = new List<CourseScheduleViewModel>();
-            var model = await _courseScheduleService.QueryAsync();
+            var model = await _courseScheduleService.QueryAsync(keyword);
             foreach (var item in model)
             {
                 vm.Add(new CourseScheduleViewModel
@@ -40,6 +40,7 @@ namespace CourseWeb.Controllers
                     Desc = item.Des
                 });
             }
+            ViewBag.KeyWord = keyword;
             return View(vm);
         }
 

@@ -30,6 +30,8 @@ namespace CourseWeb
             builder.Services.AddScoped<ICourseScheduleRepository,CourseScheduleRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IUserRespository,UserRepository>();
+            builder.Services.AddScoped<IUserCourseScheduleRepository, UserCourseSceheduleRepository>();
+            builder.Services.AddScoped<IShopService,ShopService>();
 
             var app = builder.Build();
 

@@ -1,7 +1,5 @@
 ﻿@model IEnumerable<CourseScheduleViewModel>
 @{
-
-
     ViewData["Title"] = "Home Page";
 }
 
@@ -16,55 +14,48 @@
     </div>
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="https://picsum.photos/1200/400?random=1" class="d-block w-100" alt="C# 入門">
-            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
-                <h5>C# 入門</h5>
-                <p>從零開始學習 C# 語言，建立程式基礎。</p>
-            </div>
+            <img src="https://picsum.photos/1200/400?random=1" class="d-block w-100">
         </div>
         <div class="carousel-item">
-            <img src="https://picsum.photos/1200/400?random=2" class="d-block w-100" alt="ASP.NET Core MVC">
-            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
-                <h5>ASP.NET Core MVC</h5>
-                <p>建立完整的 MVC 網站與應用程式。</p>
-            </div>
+            <img src="https://picsum.photos/1200/400?random=2" class="d-block w-100">
         </div>
         <div class="carousel-item">
-            <img src="https://picsum.photos/1200/400?random=3" class="d-block w-100" alt="Entity Framework Core">
-            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
-                <h5>Entity Framework Core</h5>
-                <p>掌握資料庫操作與 ORM 技術，快速開發資料導向應用程式。</p>
-            </div>
+            <img src="https://picsum.photos/1200/400?random=3" class="d-block w-100">
         </div>
         <div class="carousel-item">
-            <img src="https://picsum.photos/1200/400?random=4" class="d-block w-100" alt="JavaScript 入門">
-            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
-                <h5>JavaScript 入門</h5>
-                <p>學習前端程式語言，建立互動式網頁效果。</p>
-            </div>
+            <img src="https://picsum.photos/1200/400?random=4" class="d-block w-100">
         </div>
         <div class="carousel-item">
-            <img src="https://picsum.photos/1200/400?random=5" class="d-block w-100" alt="HTML & CSS 基礎">
-            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
-                <h5>HTML & CSS 基礎</h5>
-                <p>建立網頁骨架與樣式，學習網頁設計基礎。</p>
-            </div>
+            <img src="https://picsum.photos/1200/400?random=5" class="d-block w-100">
         </div>
         <div class="carousel-item">
-            <img src="https://picsum.photos/1200/400?random=6" class="d-block w-100" alt="React 入門">
-            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
-                <h5>React 入門</h5>
-                <p>學習 React 框架，建立現代化前端應用程式。</p>
-            </div>
+            <img src="https://picsum.photos/1200/400?random=6" class="d-block w-100">
         </div>
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#courseCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon"></span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#courseCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon"></span>
-    </button>
 </div>
+
+<!-- ===== 搜尋表框 ===== -->
+<div class="container mb-4">
+    <form method="get" asp-controller="Home" asp-action="Index">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text"
+                           name="keyword"
+                           class="form-control"
+                           placeholder="搜尋課程名稱 / 老師 / 課程編號"
+                           value="@ViewBag.Keyword" />
+                    <button class="btn btn-outline-primary" type="submit">搜尋</button>
+                      <!-- 清除按鈕 -->
+                    <a class="btn btn-outline-secondary" href="@Url.Action("Index", "Home")">清除</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
 <!-- ===== 課程卡片 ===== -->
 <div class="container">
     <h2 class="mb-4 text-center">熱門課程</h2>
@@ -74,20 +65,13 @@
         {
             <div class="col">
                 <div class="card h-100 shadow-sm">
-                    <img src="https://picsum.photos/400/200?random=@item.Id"
-                         class="card-img-top"
-                         alt="@item.CourseName">
+                    <img src="https://picsum.photos/400/200?random=@item.Id" class="card-img-top">
 
                     <div class="card-body">
                         <h5 class="card-title">@item.CourseName</h5>
-
-                        <!-- 簡短描述 -->
                         <p class="card-text">
-                            @(item.Desc?.Length > 50
-                                ? item.Desc.Substring(0, 50) + "..."
-                                : item.Desc)
+                            @(item.Desc?.Length > 50 ? item.Desc.Substring(0, 50) + "..." : item.Desc)
                         </p>
-
                         <ul class="list-unstyled small mb-0">
                             <li><strong>課程編號：</strong>@item.CourseCode</li>
                             <li><strong>老師：</strong>@item.TeacherName</li>
@@ -97,7 +81,6 @@
                     </div>
 
                     <div class="card-footer text-end">
-                        <!-- 🔴 觸發 Modal -->
                         <button class="btn btn-primary btn-sm"
                                 data-bs-toggle="modal"
                                 data-bs-target="#courseModal-@item.Id">
@@ -107,20 +90,14 @@
                 </div>
             </div>
 
-            <!-- ===== Modal（彈跳視窗） ===== -->
-            <div class="modal fade"
-                 id="courseModal-@item.Id"
-                 tabindex="-1"
-                 aria-hidden="true">
-
+            <!-- ===== Modal ===== -->
+            <div class="modal fade" id="courseModal-@item.Id" tabindex="-1">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
 
                         <div class="modal-header">
                             <h5 class="modal-title">@item.CourseName</h5>
-                            <button type="button"
-                                    class="btn-close"
-                                    data-bs-dismiss="modal"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
 
                         <div class="modal-body">
@@ -128,31 +105,55 @@
                             <p><strong>老師：</strong>@item.TeacherName</p>
                             <p><strong>地點：</strong>@item.Location</p>
                             <p><strong>時數：</strong>@item.Times 小時</p>
-                            <p>
-                                <strong>上課日期：</strong>
-                                @item.StartDate.ToString("yyyy/MM/dd")
-                                ~
+                            <p><strong>上課日期：</strong>
+                                @item.StartDate.ToString("yyyy/MM/dd") ~
                                 @item.EndDate.ToString("yyyy/MM/dd")
                             </p>
-
                             <hr />
-
                             <p>@item.Desc</p>
+
+                            @if (TempData["ShopOrderMessage"] != null)
+                            {
+                                <div class="alert alert-info mt-3">
+                                    @TempData["ShopOrderMessage"].ToString().Split(':')[0]
+                                </div>
+                            }
                         </div>
 
-                        <div class="modal-footer">
-                            <button type="button"
-                                    class="btn btn-secondary"
-                                    data-bs-dismiss="modal">
-                                關閉
-                            </button>
+                        <div class="modal-footer d-flex justify-content-between">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+
+                            @if (Context.User.Identity.IsAuthenticated)
+                            {
+                                <form asp-controller="Shop" asp-action="ShopOrder" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="scheduleid" value="@item.Id" />
+                                    <button type="submit" class="btn btn-success">選課</button>
+                                </form>
+                            }
                         </div>
 
                     </div>
                 </div>
             </div>
         }
-
     </div>
 </div>
 
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var message = '@TempData["ShopOrderMessage"]';
+            if (message) {
+                var parts = message.split(':');
+                var scheduleId = parts[1];
+                if (scheduleId) {
+                    var modalEl = document.getElementById('courseModal-' + scheduleId);
+                    if (modalEl) {
+                        new bootstrap.Modal(modalEl).show();
+                    }
+                }
+            }
+        });
+    </script>
+}

@@ -43,7 +43,8 @@ namespace CourseData.Repository
                     Id = student.Id,
                     UserName = student.Name,
                     Email = student.Email,
-                    Pwd = student.Password
+                    Pwd = student.Password,
+                       Mobile = student.Mobile
                 };
             }
             return userModel;
@@ -60,7 +61,9 @@ namespace CourseData.Repository
                     Id = student.Id,
                     UserName = student.Name,
                     Email = student.Email,
-                    Pwd = student.Password
+                    Pwd = student.Password,
+                 
+                  
                 };
             }
             return userModel;

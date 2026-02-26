@@ -19,5 +19,10 @@ namespace CourseService.Service
         {
             return await _courseScheduleRepository.QueryAsync();
         }
+
+        public async Task<IEnumerable<CourseScheduleModel>> QueryAsync(string? keyword)
+        {
+            return await _courseScheduleRepository.QueryAsync(keyword);
+        }
     }
 }

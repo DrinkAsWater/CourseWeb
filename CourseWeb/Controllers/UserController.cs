@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Runtime.Intrinsics.X86;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -125,16 +127,16 @@ namespace CourseWeb.Controllers
                         OldPwd = changePwdViewModel.OldPassword!,
                         NewPwd = changePwdViewModel.Password!
                     });
-                
-                    if (!result)
-                    {
-                        ModelState.AddModelError("system", "修改密碼失敗");
+
+                if (!result)
+                {
+                    ModelState.AddModelError("system", "修改密碼失敗");
                     return View(changePwdViewModel);
                 }
                 return RedirectToAction("Logout");
-                
+
             }
-                        return View(changePwdViewModel);
+            return View(changePwdViewModel);
 
 
         }
@@ -145,9 +147,29 @@ namespace CourseWeb.Controllers
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var member = await _userService.FindUserAsync(userId);
 
-            var vm = new UserChgInfoViewModel(){ Name = member.UserName, Mobile = member.Mobile};
+            var vm = new UserChgInfoViewModel() { Name = member.UserName, Mobile = member.Mobile };
             return View(vm);
         }
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeInfo(UserChgInfoViewModel userChgInfoViewModel)
+        {
+            if (ModelState.IsValid) {
+                var result = await _userService.UserInfoUpdateAsync(new UserInfoReqModel()
+                {
+                    UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                    Name = userChgInfoViewModel.Name,
+                    Mobile = userChgInfoViewModel.Mobile
+
+                });
+                ViewBag.Result = result ? "更新成功" : "更新失敗";
+            }
+
+        return View(userChgInfoViewModel);
+        }
+}
+    
     }
-    }
+    
 

@@ -22,6 +22,13 @@ namespace CourseService.Service
             return await _userRespository.FindByIdAsync(UserId); 
         }
 
+        public async Task<bool> UserInfoUpdateAsync(UserInfoReqModel userInfoReqModel)
+        {
+           await _userRespository.UpdateInfoAsync(userInfoReqModel);
+            return true;
+
+        }
+
         public async Task<bool> UserPwdUpdateAsync(UserPwdReqModel userPwdReqModel)
         {
             //1.檢查帳號是否存在

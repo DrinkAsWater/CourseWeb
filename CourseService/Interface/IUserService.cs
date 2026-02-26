@@ -17,6 +17,8 @@ namespace CourseService.Interface
 
         Task<UserModel> FindUserAsync(Guid UserId);
 
+        Task<bool>UserInfoUpdateAsync(UserInfoReqModel userInfoReqModel);
+
      
     }
 }

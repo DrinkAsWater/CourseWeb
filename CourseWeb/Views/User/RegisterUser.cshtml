@@ -61,7 +61,19 @@
                             </button>
                         </div>
                     </form>
+                    <!-- 分隔線 -->
+                    <div class="d-flex align-items-center my-3">
+                        <hr class="flex-grow-1" />
+                        <span class="mx-2 text-muted small">或</span>
+                        <hr class="flex-grow-1" />
+                    </div>
 
+                    <!-- Google 註冊按鈕 -->
+                    <div class="d-grid mb-3">
+                        <a href="@Url.Action("GoogleLogin", "User")" class="btn btn-danger">
+                            <i class="fab fa-google"></i> 使用 Google 註冊／登入
+                        </a>
+                    </div>
                     <div class="text-center">
                         <span>已經有帳號？</span>
                         <a asp-controller="User"

@@ -17,6 +17,11 @@ namespace CourseService.Interface
         Task<bool> UpdatePwdAsync(Guid id, string pwd);
 
         Task<bool> UpdateInfoAsync(UserInfoReqModel userInfoReqModel);
-       
+
+        Task<UserModel> FindByProviderAsync(int provider, string providerUserId);
+
+        Task BindProviderAsync(Guid userId, int provider, string providerUserId);
+
+
     }
 }

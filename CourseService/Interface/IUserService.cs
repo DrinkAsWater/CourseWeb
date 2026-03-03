@@ -19,6 +19,11 @@ namespace CourseService.Interface
 
         Task<bool>UserInfoUpdateAsync(UserInfoReqModel userInfoReqModel);
 
-     
+        Task<UserModel> OAuthLoginAsync(string providerUserId, string name, string email);
+
+        Task<bool> UserSetPwdAsync(Guid userId, string newPwd);
+
+
+
     }
 }

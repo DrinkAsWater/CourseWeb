@@ -18,11 +18,20 @@ namespace CourseWeb
           builder.Configuration.GetConnectionString("KhNetCourse")
       )
   );
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, config =>
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;   // Cookie
+            })
+               .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, config =>
                 {
                     config.Cookie.Name = "UserLoginCookie";
                     config.LoginPath = "/User/Login";
+                })
+                .AddGoogle(options =>
+                {
+                    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+                    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+                    options.CallbackPath = "/signin-google";
                 });
             // Add services to the container.
             builder.Services.AddControllersWithViews();

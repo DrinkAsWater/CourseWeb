@@ -18,6 +18,18 @@ namespace CourseData.Repository
         {
             _dbContext = dbContext;
         }
+
+        public async Task BindProviderAsync(Guid userId, int provider, string providerUserId)
+        {
+            var user = await _dbContext.Students.FindAsync(userId);
+            if (user == null) return;
+
+            user.Provider = provider;
+            user.ProviderUserId = providerUserId;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<bool> CreateAsync(UserModel user)
         {
             await _dbContext.AddAsync(new Student()
@@ -26,6 +38,8 @@ namespace CourseData.Repository
                 Name = user.UserName,
                 Email = user.Email,
                 Password = user.Pwd,
+                Provider = user.Provider,
+                ProviderUserId = user.ProviderUserId
             });
 
             await _dbContext.SaveChangesAsync();
@@ -41,13 +55,32 @@ namespace CourseData.Repository
                 userModel = new UserModel()
                 {
                     Id = student.Id,
-                    UserName = student.Name,
-                    Email = student.Email,
-                    Pwd = student.Password,
-                       Mobile = student.Mobile
+                    UserName = student.Name ?? string.Empty,
+                    Email = student.Email ?? string.Empty,
+                    Pwd = student.Password ?? string.Empty,
+                    Mobile = student.Mobile ?? string.Empty,
                 };
             }
             return userModel;
+        }
+
+        public async Task<UserModel> FindByProviderAsync(int provider, string providerUserId)
+        {
+            var student = await _dbContext.Students
+        .FirstOrDefaultAsync(s => s.Provider == provider && s.ProviderUserId == providerUserId);
+
+            if (student == null) return null;
+
+            return new UserModel
+            {
+                Id = student.Id,
+                UserName = student.Name ?? string.Empty,
+                Email = student.Email ?? string.Empty,
+                Pwd = student.Password ?? string.Empty,
+                Mobile = student.Mobile ?? string.Empty,
+                Provider = student.Provider,
+                ProviderUserId = student.ProviderUserId
+            };
         }
 
         public async Task<UserModel> IsEmailExistsAsync(string email)
@@ -59,11 +92,11 @@ namespace CourseData.Repository
                 userModel = new UserModel()
                 {
                     Id = student.Id,
-                    UserName = student.Name,
-                    Email = student.Email,
-                    Pwd = student.Password,
-                 
-                  
+                    UserName = student.Name ?? string.Empty,
+                    Email = student.Email ?? string.Empty,
+                    Pwd = student.Password ?? string.Empty,
+
+
                 };
             }
             return userModel;

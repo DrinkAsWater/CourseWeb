@@ -17,6 +17,11 @@ namespace CourseService.Models
         public string Email { get; set; }
 
         public string? Mobile { get; set; }
+
+        // 新增欄位支援 OAuth / Google 登入
+        public int Provider { get; set; }    
+        // 0=本地帳號, 1=Google
+        public string? ProviderUserId { get; set; } // Google 唯一識別 (sub)
     }
 }
 

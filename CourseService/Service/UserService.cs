@@ -22,6 +22,35 @@ namespace CourseService.Service
             return await _userRespository.FindByIdAsync(UserId); 
         }
 
+        public async Task<UserModel> OAuthLoginAsync(string providerUserId, string name, string email)
+        {
+            // 1️⃣ 找是否已有 Google 綁定
+            var user = await _userRespository.FindByProviderAsync(1, providerUserId);
+            if (user != null) return user;
+
+            // 2️ Google ID 未綁定 → 查本地 Email
+            var localUser = await _userRespository.IsEmailExistsAsync(email);
+            if (localUser != null)
+            {
+                // 原本這兩行物件賦值 + UpdateInfoAsync 都刪掉
+                await _userRespository.BindProviderAsync(localUser.Id, 1, providerUserId);
+                return localUser;
+            }
+
+            //新帳號
+            var newUser = new UserModel
+            {
+                Id = Guid.NewGuid(),
+                UserName = name,
+                Email = email,
+                Pwd = null,
+                Provider = 1,
+                ProviderUserId = providerUserId
+            };
+            await _userRespository.CreateAsync(newUser);
+            return newUser;
+        }
+
         public async Task<bool> UserInfoUpdateAsync(UserInfoReqModel userInfoReqModel)
         {
            await _userRespository.UpdateInfoAsync(userInfoReqModel);
@@ -57,7 +86,12 @@ namespace CourseService.Service
             return await _userRespository.CreateAsync(user);
         }
 
-      
+        public async Task<bool> UserSetPwdAsync(Guid userId, string newPwd)
+        {
+            var hashPwd = PasswordHelper.PwdSHA256Hash(newPwd, userId.ToString());
+            return await _userRespository.UpdatePwdAsync(userId, hashPwd);
+        }
+
         public async Task<UserModel> UserSignAsync(string email, string pwd)
         {
             //檢查帳號是否存在

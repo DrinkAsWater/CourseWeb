@@ -124,7 +124,7 @@ public partial class KhNetCourseContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("name");
             entity.Property(e => e.Password)
-                .IsRequired()
+                //.IsRequired()
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("password");

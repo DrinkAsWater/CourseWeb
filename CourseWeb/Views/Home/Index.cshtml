@@ -1,143 +1,511 @@
-﻿@model IEnumerable<CourseScheduleViewModel>
+@model IEnumerable<CourseScheduleViewModel>
 @{
     ViewData["Title"] = "Home Page";
 }
 
-<div id="courseCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
-    <div class="carousel-indicators">
-        <button type="button" data-bs-target="#courseCarousel" data-bs-slide-to="0" class="active"></button>
-        <button type="button" data-bs-target="#courseCarousel" data-bs-slide-to="1"></button>
-        <button type="button" data-bs-target="#courseCarousel" data-bs-slide-to="2"></button>
-        <button type="button" data-bs-target="#courseCarousel" data-bs-slide-to="3"></button>
-        <button type="button" data-bs-target="#courseCarousel" data-bs-slide-to="4"></button>
-        <button type="button" data-bs-target="#courseCarousel" data-bs-slide-to="5"></button>
+<style>
+    /* ── Hero Banner ── */
+    .hero-carousel {
+        position: relative;
+        margin: 0 -12px;
+    }
+    .carousel-item img {
+        height: 420px;
+        object-fit: cover;
+        filter: brightness(0.55);
+    }
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+        z-index: 10;
+        pointer-events: none;
+    }
+    .hero-tag {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.15em;
+        color: #f97316;
+        text-transform: uppercase;
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .hero-tag::before, .hero-tag::after {
+        content: '';
+        display: inline-block;
+        width: 28px; height: 1px;
+        background: #f97316;
+    }
+    .hero-title {
+        font-family: 'DM Sans', sans-serif;
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        font-weight: 700;
+        color: #f0ede8;
+        line-height: 1.2;
+        margin-bottom: 0.6rem;
+        letter-spacing: -0.02em;
+    }
+    .hero-sub {
+        font-size: 1rem;
+        color: rgba(240,237,232,0.7);
+        max-width: 520px;
+        line-height: 1.6;
+    }
+
+    /* ── Search ── */
+    .search-wrap {
+        background: #1c1c1e;
+        padding: 1.4rem 2rem;
+        margin: 0 -12px 2.5rem;
+        display: flex;
+        justify-content: center;
+        gap: 0;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .search-inner {
+        display: flex;
+        width: 100%;
+        max-width: 560px;
+        border: 1.5px solid rgba(249,115,22,0.3);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: border-color 0.2s;
+    }
+    .search-inner:focus-within { border-color: #f97316; }
+
+    .search-input {
+        flex: 1;
+        background: #2a2a2d;
+        border: none;
+        padding: 0.65rem 1rem;
+        color: #f0ede8;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.88rem;
+        outline: none;
+    }
+    .search-input::placeholder { color: #5a5a5e; }
+
+    .search-btn {
+        background: #f97316;
+        border: none;
+        padding: 0 1.2rem;
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: background 0.2s;
+        font-family: 'DM Sans', sans-serif;
+        white-space: nowrap;
+    }
+    .search-btn:hover { background: #ea6c0a; }
+
+    .search-clear {
+        background: #242426;
+        border: none;
+        border-left: 1px solid rgba(255,255,255,0.06);
+        padding: 0 0.9rem;
+        color: #8a8680;
+        font-size: 0.82rem;
+        cursor: pointer;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        transition: color 0.2s;
+        font-family: 'DM Sans', sans-serif;
+    }
+    .search-clear:hover { color: #f0ede8; }
+
+    /* ── Section header ── */
+    .section-header {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    .section-title {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1c1c1e;
+        letter-spacing: -0.02em;
+    }
+    .section-count {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.75rem;
+        color: #f97316;
+        background: rgba(249,115,22,0.1);
+        border: 1px solid rgba(249,115,22,0.2);
+        border-radius: 20px;
+        padding: 2px 10px;
+    }
+
+    /* ── Course Cards ── */
+    .course-card {
+        background: #fff;
+        border: 1px solid #e8e4de;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .course-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(28,28,30,0.12);
+    }
+    .course-card-img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        display: block;
+    }
+    .course-card-body {
+        padding: 1.2rem 1.3rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .course-badge {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.68rem;
+        color: #8a8680;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.4rem;
+        text-transform: uppercase;
+    }
+    .course-title {
+        font-weight: 700;
+        font-size: 1rem;
+        color: #1c1c1e;
+        line-height: 1.4;
+        margin-bottom: 0.5rem;
+    }
+    .course-desc {
+        font-size: 0.82rem;
+        color: #6b6660;
+        line-height: 1.6;
+        flex: 1;
+        margin-bottom: 1rem;
+    }
+    .course-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-bottom: 1rem;
+    }
+    .meta-chip {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.7rem;
+        background: #f5f2ee;
+        color: #5a5654;
+        border-radius: 4px;
+        padding: 3px 8px;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+    .meta-chip i { color: #f97316; font-size: 0.72rem; }
+
+    .course-card-footer {
+        padding: 0.8rem 1.3rem;
+        border-top: 1px solid #f0ece6;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .btn-detail {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #f97316;
+        border: 1.5px solid rgba(249,115,22,0.35);
+        background: transparent;
+        border-radius: 6px;
+        padding: 0.35rem 1rem;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+    .btn-detail:hover {
+        background: #f97316;
+        color: #fff;
+        border-color: #f97316;
+    }
+
+    /* ── Modal ── */
+    .modal-content {
+        border: none;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 24px 60px rgba(0,0,0,0.2);
+    }
+    .modal-header {
+        background: #1c1c1e;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        padding: 1.2rem 1.5rem;
+    }
+    .modal-title {
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: #f0ede8;
+    }
+    .btn-close { filter: invert(1) opacity(0.6); }
+    .btn-close:hover { filter: invert(1) opacity(1); }
+
+    .modal-body {
+        padding: 1.5rem;
+        background: #faf8f5;
+    }
+    .modal-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+        margin-bottom: 1.2rem;
+    }
+    .modal-info-item {
+        background: #fff;
+        border: 1px solid #ece8e2;
+        border-radius: 8px;
+        padding: 0.7rem 1rem;
+    }
+    .modal-info-label {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.68rem;
+        color: #aaa;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 3px;
+    }
+    .modal-info-value {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #1c1c1e;
+    }
+    .modal-desc {
+        background: #fff;
+        border: 1px solid #ece8e2;
+        border-radius: 8px;
+        padding: 1rem;
+        font-size: 0.85rem;
+        color: #5a5654;
+        line-height: 1.7;
+    }
+    .modal-footer {
+        background: #f5f2ee;
+        border-top: 1px solid #ece8e2;
+        padding: 1rem 1.5rem;
+    }
+    .btn-enroll {
+        background: #1c1c1e;
+        color: #f97316;
+        border: 1.5px solid rgba(249,115,22,0.4);
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.88rem;
+        padding: 0.5rem 1.5rem;
+        font-family: 'DM Sans', sans-serif;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+    .btn-enroll:hover {
+        background: #f97316;
+        color: #fff;
+        border-color: #f97316;
+    }
+    .btn-modal-close {
+        background: transparent;
+        color: #8a8680;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        padding: 0.5rem 1.2rem;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .btn-modal-close:hover { background: #eee; color: #333; }
+
+    /* ── Empty state ── */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #aaa;
+    }
+    .empty-state i { font-size: 2.5rem; margin-bottom: 1rem; color: #ddd; }
+    .empty-state p { font-family: 'DM Mono', monospace; font-size: 0.85rem; }
+</style>
+
+<!-- Hero Carousel -->
+<div class="hero-carousel">
+    <div id="courseCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            @for (int i = 0; i < 6; i++)
+            {
+                <button type="button" data-bs-target="#courseCarousel"
+                        data-bs-slide-to="@i"
+                        class="@(i == 0 ? "active" : "")"></button>
+            }
+        </div>
+        <div class="carousel-inner">
+            @for (int i = 1; i <= 6; i++)
+            {
+                <div class="carousel-item @(i == 1 ? "active" : "")">
+                    <img src="https://picsum.photos/1400/500?random=@i" class="d-block w-100">
+                </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#courseCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#courseCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
     </div>
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="https://picsum.photos/1200/400?random=1" class="d-block w-100">
-        </div>
-        <div class="carousel-item">
-            <img src="https://picsum.photos/1200/400?random=2" class="d-block w-100">
-        </div>
-        <div class="carousel-item">
-            <img src="https://picsum.photos/1200/400?random=3" class="d-block w-100">
-        </div>
-        <div class="carousel-item">
-            <img src="https://picsum.photos/1200/400?random=4" class="d-block w-100">
-        </div>
-        <div class="carousel-item">
-            <img src="https://picsum.photos/1200/400?random=5" class="d-block w-100">
-        </div>
-        <div class="carousel-item">
-            <img src="https://picsum.photos/1200/400?random=6" class="d-block w-100">
-        </div>
+    <div class="hero-overlay">
+        <div class="hero-tag">精選課程</div>
+        <div class="hero-title">為工程師而生的<br>進修平台</div>
+        <div class="hero-sub">不管你是在職工程師、想轉職的新鮮人，<br>還是想進修的學生，這裡都有你需要的課程。</div>
     </div>
 </div>
 
-<!-- ===== 搜尋表框 ===== -->
-<div class="container mb-4">
-    <form method="get" asp-controller="Home" asp-action="Index">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="input-group">
-                    <input type="text"
-                           name="keyword"
-                           class="form-control"
-                           placeholder="搜尋課程名稱 / 老師 / 課程編號"
-                           value="@ViewBag.Keyword" />
-                    <button class="btn btn-outline-primary" type="submit">搜尋</button>
-                      <!-- 清除按鈕 -->
-                    <a class="btn btn-outline-secondary" href="@Url.Action("Index", "Home")">清除</a>
-                </div>
-            </div>
+<!-- Search -->
+<div class="search-wrap">
+    <form method="get" asp-controller="Home" asp-action="Index" style="width:100%;display:flex;justify-content:center;">
+        <div class="search-inner">
+            <input type="text"
+                   name="keyword"
+                   class="search-input"
+                   placeholder="搜尋課程 / 老師 / 課程編號..."
+                   value="@ViewBag.Keyword" />
+            <button class="search-btn" type="submit">
+                <i class="bi bi-search me-1"></i> 搜尋
+            </button>
+            <a class="search-clear" href="@Url.Action("Index", "Home")">
+                清除
+            </a>
         </div>
     </form>
 </div>
 
-
-
-<!-- ===== 課程卡片 ===== -->
+<!-- Course Cards -->
 <div class="container">
-    <h2 class="mb-4 text-center">熱門課程</h2>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-
-        @foreach (var item in Model)
-        {
-            <div class="col">
-                <div class="card h-100 shadow-sm">
-                    <img src="https://picsum.photos/400/200?random=@item.Id" class="card-img-top">
-
-                    <div class="card-body">
-                        <h5 class="card-title">@item.CourseName</h5>
-                        <p class="card-text">
-                            @(item.Desc?.Length > 50 ? item.Desc.Substring(0, 50) + "..." : item.Desc)
-                        </p>
-                        <ul class="list-unstyled small mb-0">
-                            <li><strong>課程編號：</strong>@item.CourseCode</li>
-                            <li><strong>老師：</strong>@item.TeacherName</li>
-                            <li><strong>地點：</strong>@item.Location</li>
-                            <li><strong>時數：</strong>@item.Times 小時</li>
-                        </ul>
-                    </div>
-
-                    <div class="card-footer text-end">
-                        <button class="btn btn-primary btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#courseModal-@item.Id">
-                            查看更多
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== Modal ===== -->
-            <div class="modal fade" id="courseModal-@item.Id" tabindex="-1">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-
-                        <div class="modal-header">
-                            <h5 class="modal-title">@item.CourseName</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-
-                        <div class="modal-body">
-                            <p><strong>課程編號：</strong>@item.CourseCode</p>
-                            <p><strong>老師：</strong>@item.TeacherName</p>
-                            <p><strong>地點：</strong>@item.Location</p>
-                            <p><strong>時數：</strong>@item.Times 小時</p>
-                            <p><strong>上課日期：</strong>
-                                @item.StartDate.ToString("yyyy/MM/dd") ~
-                                @item.EndDate.ToString("yyyy/MM/dd")
-                            </p>
-                            <hr />
-                            <p>@item.Desc</p>
-
-                            @if (TempData["ShopOrderMessage"] != null)
-                            {
-                                <div class="alert alert-info mt-3">
-                                    @TempData["ShopOrderMessage"].ToString().Split(':')[0]
-                                </div>
-                            }
-                        </div>
-
-                        <div class="modal-footer d-flex justify-content-between">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-
-                            @if (Context.User.Identity.IsAuthenticated)
-                            {
-                                <form asp-controller="Shop" asp-action="ShopOrder" method="post">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="scheduleid" value="@item.Id" />
-                                    <button type="submit" class="btn btn-success">選課</button>
-                                </form>
-                            }
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        }
+    <div class="section-header">
+        <div class="section-title">熱門課程</div>
+        <div class="section-count">@Model.Count() 門課程</div>
     </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div><i class="bi bi-search"></i></div>
+            <p>找不到符合的課程，試試其他關鍵字</p>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="course-card">
+                        <img src="https://picsum.photos/400/200?random=@item.Id"
+                             class="course-card-img" alt="@item.CourseName">
+                        <div class="course-card-body">
+                            <div class="course-badge">@item.CourseCode</div>
+                            <div class="course-title">@item.CourseName</div>
+                            <div class="course-desc">
+                                @(item.Desc?.Length > 60 ? item.Desc.Substring(0, 60) + "..." : item.Desc)
+                            </div>
+                            <div class="course-meta">
+                                <span class="meta-chip"><i class="bi bi-person"></i> @item.TeacherName</span>
+                                <span class="meta-chip"><i class="bi bi-geo-alt"></i> @item.Location</span>
+                                <span class="meta-chip"><i class="bi bi-clock"></i> @item.Times 小時</span>
+                            </div>
+                        </div>
+                        <div class="course-card-footer">
+                            <button class="btn-detail"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#courseModal-@item.Id">
+                                查看詳情 →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="courseModal-@item.Id" tabindex="-1">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">@item.CourseName</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-info-grid">
+                                    <div class="modal-info-item">
+                                        <div class="modal-info-label">課程編號</div>
+                                        <div class="modal-info-value">@item.CourseCode</div>
+                                    </div>
+                                    <div class="modal-info-item">
+                                        <div class="modal-info-label">授課老師</div>
+                                        <div class="modal-info-value">@item.TeacherName</div>
+                                    </div>
+                                    <div class="modal-info-item">
+                                        <div class="modal-info-label">上課地點</div>
+                                        <div class="modal-info-value">@item.Location</div>
+                                    </div>
+                                    <div class="modal-info-item">
+                                        <div class="modal-info-label">課程時數</div>
+                                        <div class="modal-info-value">@item.Times 小時</div>
+                                    </div>
+                                    <div class="modal-info-item" style="grid-column: 1 / -1">
+                                        <div class="modal-info-label">上課日期</div>
+                                        <div class="modal-info-value">
+                                            @item.StartDate.ToString("yyyy/MM/dd") &nbsp;→&nbsp; @item.EndDate.ToString("yyyy/MM/dd")
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-desc">@item.Desc</div>
+
+                                @if (TempData["ShopOrderMessage"] != null)
+                                {
+                                    <div class="alert alert-info mt-3" style="border-radius:8px;font-size:0.85rem;">
+                                        @TempData["ShopOrderMessage"].ToString().Split(':')[0]
+                                    </div>
+                                }
+                            </div>
+                            <div class="modal-footer d-flex justify-content-between">
+                                <button type="button" class="btn-modal-close" data-bs-dismiss="modal">關閉</button>
+                                @if (Context.User.Identity.IsAuthenticated)
+                                {
+                                    <form asp-controller="Shop" asp-action="ShopOrder" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="scheduleid" value="@item.Id" />
+                                        <button type="submit" class="btn-enroll">
+                                            <i class="bi bi-plus-circle me-1"></i> 立即選課
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <a href="/User/Login" class="btn-enroll" style="text-decoration:none;">
+                                        <i class="bi bi-box-arrow-in-right me-1"></i> 登入後選課
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>
 
 @section Scripts {
@@ -148,7 +516,7 @@
                 var parts = message.split(':');
                 var scheduleId = parts[1];
                 if (scheduleId) {
-                    var modalEl = document.getElementById('courseModal-' + scheduleId);
+                    var modalEl = document.getElementById('courseModal-' + scheduleId.trim());
                     if (modalEl) {
                         new bootstrap.Modal(modalEl).show();
                     }

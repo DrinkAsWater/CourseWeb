@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using System.Runtime.Intrinsics.X86;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -144,10 +145,17 @@ namespace CourseWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> ChangeInfo()
         {
+            //var rawId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //Console.WriteLine($">>> NameIdentifier = {rawId}"); // 加這行
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var member = await _userService.FindUserAsync(userId);
 
-            var vm = new UserChgInfoViewModel() { Name = member.UserName, Mobile = member.Mobile };
+            var vm = new UserChgInfoViewModel()
+            { Name = member.UserName, 
+              Mobile = member.Mobile ,
+             HasPassword = !string.IsNullOrEmpty(member.Pwd)
+
+            };
             return View(vm);
         }
         [Authorize]
@@ -155,7 +163,10 @@ namespace CourseWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeInfo(UserChgInfoViewModel userChgInfoViewModel)
         {
-            if (ModelState.IsValid) {
+            if (ModelState.IsValid)
+            {
+                var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
                 var result = await _userService.UserInfoUpdateAsync(new UserInfoReqModel()
                 {
                     UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)),
@@ -163,13 +174,97 @@ namespace CourseWeb.Controllers
                     Mobile = userChgInfoViewModel.Mobile
 
                 });
+                if (result)
+                {
+                    var claims = new[]
+                    {
+                         new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                          new Claim(ClaimTypes.Name, userChgInfoViewModel.Name)
+                    };
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+                }
                 ViewBag.Result = result ? "更新成功" : "更新失敗";
             }
 
-        return View(userChgInfoViewModel);
+            return View(userChgInfoViewModel);
         }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult SetPassword()
+        {
+            return View();
+        }
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            // 直接用 UserPwdUpdateAsync 但舊密碼帶空字串會失敗
+            // 所以 Service 新增一個專門設定新密碼的方法
+            var result = await _userService.UserSetPwdAsync(userId, model.Password!);
+
+            if (!result)
+            {
+                ModelState.AddModelError("system", "新增密碼失敗");
+                return View(model);
+            }
+            return RedirectToAction("ChangeInfo");
+        }
+
+        // 點擊 Google 登入按鈕
+        [HttpGet]
+        public IActionResult GoogleLogin()
+        {
+            Console.WriteLine(">>> 進入 GoogleLogin");
+            var redirectUrl = Url.Action("GoogleResponse", "User");
+            var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
+            properties.Parameters["prompt"] = "select_account"; // 強制顯示帳號選擇
+            return Challenge(properties, "Google");
+        }
+
+      
+       
+        [HttpGet]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync("Google");
+
+            if (!result.Succeeded || result.Principal == null)
+                return RedirectToAction("Login");
+
+            var claims = result.Principal.Claims;
+            var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            var name = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            var providerUserId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(email))
+                return RedirectToAction("Login"); // 避免 null exception
+
+            var user = await _userService.OAuthLoginAsync(providerUserId, name, email);
+            Console.WriteLine($">>> user.Id = {user.Id}");
+            Console.WriteLine($">>> user.UserName = {user.UserName}");
+
+
+            var claimsIdentity = new ClaimsIdentity(new[]
+            {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.Email, user.Email)
+    }, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity));
+
+            return RedirectToAction("Index", "Home");
+        }
+    }
 }
     
-    }
     
 

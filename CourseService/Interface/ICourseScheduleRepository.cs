@@ -11,6 +11,8 @@ namespace CourseService.Respository
     {
         Task<IEnumerable<CourseScheduleModel>> QueryAsync();
 
+        Task<CourseScheduleModel?> QueryAsync(Guid id);
+
         Task<IEnumerable<CourseScheduleModel>> QueryAsync(string? keyword);
     }
 }

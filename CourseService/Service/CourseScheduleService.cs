@@ -12,7 +12,8 @@ namespace CourseService.Service
     public class CourseScheduleService : ICourseScheduleService
     {
         private readonly ICourseScheduleRepository _courseScheduleRepository;
-        public CourseScheduleService(ICourseScheduleRepository courseScheduleRepository) {
+        public CourseScheduleService(ICourseScheduleRepository courseScheduleRepository)
+        {
             _courseScheduleRepository = courseScheduleRepository;
         }
         public async Task<IEnumerable<CourseScheduleModel>> QueryAsync()
@@ -23,6 +24,11 @@ namespace CourseService.Service
         public async Task<IEnumerable<CourseScheduleModel>> QueryAsync(string? keyword)
         {
             return await _courseScheduleRepository.QueryAsync(keyword);
+        }
+
+        public async Task<CourseScheduleModel?> QueryAsync(Guid id)
+        {
+            return await _courseScheduleRepository.QueryAsync(id);
         }
     }
 }

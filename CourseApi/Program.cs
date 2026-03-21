@@ -79,6 +79,7 @@ namespace CourseApi
             builder.Services.AddScoped<IUserCourseScheduleRepository, UserCourseSceheduleRepository>();
             builder.Services.AddScoped<IShopService, ShopService>();
             builder.Services.AddScoped<IJwtHelper, JwtHelper>();
+            builder.Services.AddSingleton<ITokenBlacklistService, TokenBlacklistService>();
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             //builder.Services.AddSwaggerGen();

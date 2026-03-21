@@ -5,7 +5,8 @@
         private static readonly HashSet<string> _blacklist = new()
         {
           "test-jti-001",
-          "test-jti-002"
+          "test-jti-002",
+          "6a4a3d9e-45d1-43bf-bbf6-37800b76298d"
         };
 
         private static readonly object _lock = new();

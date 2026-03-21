@@ -7,6 +7,7 @@ using CourseService.Respository;
 using CourseService.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -81,23 +82,33 @@ namespace CourseApi
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             //builder.Services.AddSwaggerGen();
-            builder.Services.AddSwaggerGen(
-                option =>
+            builder.Services.AddSwaggerGen(option =>
+            {
+                option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                    {
-                        Name = "Authorization",
-                        Type = SecuritySchemeType.Http,
-                        Scheme = "Bearer",
-                        BearerFormat = "JWT",
-                        In = ParameterLocation.Header,
-                        Description = "請輸入Jwt token,格式:Bearer:{token}"
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "請輸入Jwt token,格式:Bearer:{token}"
+                });
 
-
-                    });
-         
+                option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
                 }
-                );
+            },
+            new string[] {}
+        }
+    });
+            });
 
             var app = builder.Build();
 

@@ -30,8 +30,8 @@ namespace CourseApi.Controllers
             var shopList = await _shopService.GetShopOrderListAsync(Guid.Parse(userId));
             return Ok(shopList);
         }
-    }
-    [Authorize]
+    
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ShopOrder(ShopCourseRequest shopCourseRequest)
         {

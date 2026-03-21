@@ -122,6 +122,7 @@ namespace CourseApi
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
+            app.UseMiddleware<JwtBlacklistMiddleWare>();
             app.UseAuthorization();
             app.MapControllers();
             app.Run();

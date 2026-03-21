@@ -32,9 +32,20 @@ namespace CourseApi.Controllers
         }
     }
     [Authorize]
-    [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> ShopOrder(ShopCourseRequest shopCourseRequest)
         {
-
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return BadRequest(new { errorCode = "E02", message = "登記課程失敗(使用者使別碼不相符)" });
+            }
+            var result = await _shopService.AddShopOrderAsync(Guid.Parse(userId), shopCourseRequest.ScheduleId);
+            if (!result)
+            {
+                return BadRequest(new { errorCode = "E01", message = "登記課失敗" });
+            }
+            return Ok(shopCourseRequest);
         }
+    }
 }

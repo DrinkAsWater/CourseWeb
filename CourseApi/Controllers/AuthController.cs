@@ -13,8 +13,9 @@ namespace CourseApi.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly JwtHelper _jwtHelper;
-        public AuthController(IUserService userService, JwtHelper jwtHelper)
+        private readonly IJwtHelper _jwtHelper;
+
+        public AuthController(IUserService userService, IJwtHelper jwtHelper)
         {
             _userService = userService;
             _jwtHelper = jwtHelper;

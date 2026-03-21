@@ -1,4 +1,5 @@
-﻿using CourseService.Interface;
+﻿using CourseApi.Request;
+using CourseService.Interface;
 using CourseService.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -30,4 +31,10 @@ namespace CourseApi.Controllers
             return Ok(shopList);
         }
     }
+    [Authorize]
+    [HttpPost]
+        public async Task<IActionResult> ShopOrder(ShopCourseRequest shopCourseRequest)
+        {
+
+        }
 }

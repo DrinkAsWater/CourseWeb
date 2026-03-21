@@ -30,7 +30,7 @@ namespace CourseApi.Controllers
             var shopList = await _shopService.GetShopOrderListAsync(Guid.Parse(userId));
             return Ok(shopList);
         }
-    
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> ShopOrder(ShopCourseRequest shopCourseRequest)
@@ -46,6 +46,24 @@ namespace CourseApi.Controllers
                 return BadRequest(new { errorCode = "E01", message = "登記課失敗" });
             }
             return Ok(shopCourseRequest);
+        }
+        [Authorize]
+        [HttpDelete("studentScheduleId")]
+        public async Task<IActionResult> DeleteCourse(Guid studentScheduleId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return Unauthorized(new { errordCode = "E04", message = "使用者名稱未授權" });
+            }
+
+            var result = await _shopService.DeleteShopOrderAsync(studentScheduleId);
+            if (!result)
+            {
+                return BadRequest(new { errordCode = "E06", message = "取消課程失敗" });
+            }
+
+            return NoContent();
         }
     }
 }

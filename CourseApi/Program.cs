@@ -25,6 +25,15 @@ namespace CourseApi
                     builder.Configuration.GetConnectionString("KhNetCourse")
                 )
             );
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
 
             var jwtSettings = builder.Configuration.GetSection("JwtTokenSettings");
 
@@ -113,6 +122,7 @@ namespace CourseApi
 
             var app = builder.Build();
 
+       
             app.UseMiddleware<GlobalExceptionMiddleware>();
 
             if (app.Environment.IsDevelopment())
@@ -121,6 +131,7 @@ namespace CourseApi
                 app.UseSwaggerUI();
             }
 
+            app.UseCors("AllowAll");
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseMiddleware<JwtBlacklistMiddleWare>();

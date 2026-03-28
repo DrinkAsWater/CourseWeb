@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>登入 + 公開課程 🌈</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Segoe UI';
+            color: #fff;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 30px;
+        }
+
+        textarea {
+            color: #000;
+        }
+
+        table {
+            background: rgba(255,255,255,0.9);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 登入 -->
+    <div class="card">
+        <h2>登入系統 ✨</h2>
+
+        <input id="email" class="form-control mb-2" placeholder="Email">
+        <input id="password" type="password" class="form-control mb-2" placeholder="Password">
+
+        <!-- ✅ 手動輸入 StudentId -->
+        <input id="studentIdInput" class="form-control mb-3" placeholder="輸入 StudentId (GUID)">
+
+        <button id="loginBtn" class="btn btn-primary w-100 mb-3">登入</button>
+
+        <textarea id="token" class="form-control" rows="3" placeholder="Token 顯示在這裡"></textarea>
+    </div>
+
+    <!-- 課程 -->
+    <div class="card">
+        <h2>公開課程 🌟</h2>
+
+        <button id="getCoursesBtn" class="btn btn-primary w-100 mb-3">取得課程</button>
+
+        <table class="table text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>代碼</th>
+                    <th>名稱</th>
+                    <th>教師</th>
+                    <th>時數</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="courseTableBody"></tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+        const BASE_URL = "https://localhost:7283";
+        let jwttoken = "";
+
+        // 登入
+        $("#loginBtn").click(function () {
+            const email = $("#email").val();
+            const password = $("#password").val();
+
+            $.ajax({
+                url: BASE_URL + "/api/auth/login",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    userName: email,
+                    password: password
+                }),
+                success: function (res) {
+                    jwttoken = res.token;
+                    $("#token").val(jwttoken);
+                    alert("登入成功 ✅");
+                },
+                error: function () {
+                    alert("登入失敗 ❌");
+                }
+            });
+        });
+
+        // 取得課程
+        $("#getCoursesBtn").click(function () {
+            $.ajax({
+                url: BASE_URL + "/api/CourseSchedule",
+                type: "GET",
+                success: function (data) {
+
+                    const tbody = $("#courseTableBody");
+                    tbody.empty();
+
+                    data.forEach(c => {
+                        tbody.append(`
+                        <tr>
+                            <td>${c.code}</td>
+                            <td>${c.name}</td>
+                            <td>${c.teacherName}</td>
+                            <td>${c.times}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm"
+                                    onclick="registerCourse('${c.scheduleId || c.code}')">
+                                    報名
+                                </button>
+                            </td>
+                        </tr>
+                    `);
+                    });
+                }
+            });
+        });
+
+        // 報名
+        function registerCourse(scheduleId) {
+
+            const stuId = $("#studentIdInput").val();
+
+            if (!jwttoken) {
+                alert("請先登入");
+                return;
+            }
+
+            if (!stuId) {
+                alert("請輸入 StudentId");
+                return;
+            }
+
+            $.ajax({
+                url: BASE_URL + "/api/shop",
+                type: "POST",
+                contentType: "application/json",
+                headers: {
+                    Authorization: "Bearer " + jwttoken
+                },
+                data: JSON.stringify({
+                    stuId: stuId,
+                    scheduleId: scheduleId
+                }),
+                success: function () {
+                    alert("報名成功 🎉");
+                },
+                error: function (err) {
+                    console.error(err);
+                    alert("報名失敗 ❌");
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

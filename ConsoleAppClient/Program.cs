@@ -11,7 +11,7 @@ namespace ConsoleAppClient
             // 建立共用的 HttpClient（整個程式只建立一次）
             using var httpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://localhost:7224/")
+                BaseAddress = new Uri("https://localhost:7283/")
             };
 
 
@@ -106,10 +106,21 @@ namespace ConsoleAppClient
 
             Console.WriteLine("\n=================================\n");
 
+            //測試4.刪除訂單api
+            Console.WriteLine("【測試 3: 下單 API】");
+
+            //使用測試2取得一筆訂單來刪除
+            bool deleteSuccess = await shopApi.DeleteOrderAsync(Guid.Parse(""));
+
+            if (deleteSuccess) {
+                Console.WriteLine("刪除訂單成功");
+            }
 
 
 
-            #endregion
+            #endregion 
+
+
 
 
         }

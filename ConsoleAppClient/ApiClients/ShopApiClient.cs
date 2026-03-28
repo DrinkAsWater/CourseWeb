@@ -71,5 +71,26 @@ namespace ConsoleAppClient.ApiClients
             }
         }
 
+        public async Task<bool>DeleteOrderAsync(Guid studentScheduleId)
+        {
+            Console.WriteLine($"呼叫 API: Delete {_httpClient.BaseAddress}api/shop/{studentScheduleId}");
+            Console.WriteLine($"訂單編號: {studentScheduleId}");
+
+            var response = await _httpClient.DeleteAsync("api/shop/{studentScheduleId}");
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("刪除訂單成功");
+                return true;
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"✗ 刪除訂單失敗! 狀態碼: {response.StatusCode}");
+                Console.WriteLine($"錯誤訊息: {errorContent}");
+                return false;
+
+            }
+        }
+
     }
 }

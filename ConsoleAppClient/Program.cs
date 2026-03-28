@@ -42,7 +42,7 @@ namespace ConsoleAppClient
             // 測試 1: 登入 API
             Console.WriteLine("【測試 1: 登入 API】");
             var authApi = new AuthClient(httpClient);
-            var loginResponse = await authApi.LoginAsync("user202601@mail.com", "User202601!01");
+            var loginResponse = await authApi.LoginAsync("shop@email.com", "M13579kk");
 
             if (loginResponse != null)
             {
@@ -109,11 +109,29 @@ namespace ConsoleAppClient
             //測試4.刪除訂單api
             Console.WriteLine("【測試 3: 下單 API】");
 
-            //使用測試2取得一筆訂單來刪除
-            bool deleteSuccess = await shopApi.DeleteOrderAsync(Guid.Parse(""));
+            ////使用測試2取得一筆訂單來刪除
+            ////bool deleteSuccess = await shopApi.DeleteOrderAsync(Guid.Parse(""));
 
-            if (deleteSuccess) {
-                Console.WriteLine("刪除訂單成功");
+            //if (deleteSuccess) {
+            //    Console.WriteLine("刪除訂單成功");
+            //}
+
+            // 測試 5: 更新會員api
+            Console.WriteLine("【測試 5: 更新會員 API】");
+
+           
+           
+            var userApi = new UserApiClient(httpClient);
+            bool updateresult = await userApi.UpdateMemberInfoAsync(new Models.UserInfoUpdateModel.UserInfoRequest()
+            {
+                Name = "",
+                Mobile = "123456789"
+            });
+            
+
+            if (updateresult)
+            {
+                Console.WriteLine("✓ 更新完成!");
             }
 
 
